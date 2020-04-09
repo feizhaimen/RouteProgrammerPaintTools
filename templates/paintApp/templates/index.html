@@ -38,7 +38,7 @@
 
 <body>
   <div id="container"></div>
-  <div class="input-card" style="width:16rem">
+{% comment %}  <div class="input-card" style="width:16rem">
     <h4>官方默认自定义样式</h4>
     <div id="map-styles">
       <div class="input-item">
@@ -57,9 +57,9 @@
       <div class="input-item"><input type='radio' name='mapStyle' value='darkblue'><span>极夜蓝</span><span class="input-text">darkblue</span></div>
       <div class="input-item"><input type='radio' name='mapStyle' value='wine'><span>酱籽</span><span class="input-text">wine</span></div>
     </div>
-  </div>
+  </div>{% endcomment %}
   <script src="https://cache.amap.com/lbs/static/es5.min.js"></script>
-  <script src="https://webapi.amap.com/maps?v=1.4.15&key=您申请的key值"></script>
+  <script src="https://webapi.amap.com/maps?v=1.4.15&key=fb489557b33a913a1a8a381617b0549e"></script>
   <script>
     //初始化地图
     var map = new AMap.Map('container', {
