@@ -1,6 +1,7 @@
 # encoding=utf8
 import matplotlib.pyplot as plt
 import json
+import numpy as np
 
 
 # 绘制线路分布图
@@ -25,11 +26,12 @@ def route_showV1(routeSol, pickupSol, deliverySol):
         for pickup in pickupList:
             pickupDict['X'].append(pickup['lng'])
             pickupDict['Y'].append(pickup['lat'])
-        # plt.plot(pickupDict['X'], pickupDict['Y'])
+        colorRandom = np.random.rand(1, 3).tolist()[0]  # 随机颜色
         plt.scatter(pickupDict['X'], pickupDict['Y'], marker='h', s=200)
-        plt.plot(pickupDict['X'] + [deliveryDict['X'][0]], pickupDict['Y'] + [deliveryDict['Y'][0]])
-        plt.plot(deliveryDict['X'], deliveryDict['Y'], marker='o', markerSize=5,
-                 label=''.join(["线路", str(u)]))
+        plt.plot(pickupDict['X'] + [deliveryDict['X'][0]], pickupDict['Y'] + [deliveryDict['Y'][0]], color=colorRandom,
+                 lineWidth=3)
+        plt.plot(deliveryDict['X'], deliveryDict['Y'], marker='o', markerSize=9, color=colorRandom,
+                 lineWidth=3, label=''.join(["线路", str(u)]))
         plt.rcParams['font.sans-serif'] = ['SimHei']  # 用来正常显示中文标签
     plt.legend()
     plt.xlabel('经度')
@@ -90,15 +92,31 @@ if __name__ == '__main__':
     pickupStr = '{"pickup":[{"timeWindow":[{"overTime":0,"endTime":0,"stratTime":-56817920,"waitTime":0}],"lng":113.845615,"p2pDTC":{},"id":1,"p2dDTC":{"22":{"connected":[[0,0]],"distance":34036,"ableConnected":true,"time":41},"23":{"connected":[[0,0]],"distance":45738,"ableConnected":true,"time":55},"24":{"connected":[[0,0]],"distance":45738,"ableConnected":true,"time":55},"25":{"connected":[[0,0]],"distance":51074,"ableConnected":true,"time":61},"26":{"connected":[[0,0]],"distance":35939,"ableConnected":true,"time":43},"27":{"connected":[[0,0]],"distance":34036,"ableConnected":true,"time":41},"28":{"connected":[[0,0]],"distance":35919,"ableConnected":true,"time":43},"29":{"connected":[[0,0]],"distance":51640,"ableConnected":true,"time":62},"30":{"connected":[[0,0]],"distance":53617,"ableConnected":true,"time":64},"31":{"connected":[[0,0]],"distance":40517,"ableConnected":true,"time":49},"32":{"connected":[[0,0]],"distance":46865,"ableConnected":true,"time":56},"11":{"connected":[[0,0]],"distance":4545,"ableConnected":true,"time":5},"33":{"connected":[[0,0]],"distance":42338,"ableConnected":true,"time":51},"12":{"connected":[[0,0]],"distance":45997,"ableConnected":true,"time":55},"34":{"connected":[[0,0]],"distance":44942,"ableConnected":true,"time":54},"13":{"connected":[[0,0]],"distance":17511,"ableConnected":true,"time":21},"35":{"connected":[[0,0]],"distance":58947,"ableConnected":true,"time":71},"14":{"connected":[[0,0]],"distance":60138,"ableConnected":true,"time":72},"36":{"connected":[[0,0]],"distance":50960,"ableConnected":true,"time":61},"15":{"connected":[[0,0]],"distance":59460,"ableConnected":true,"time":71},"37":{"connected":[[0,0]],"distance":4612,"ableConnected":true,"time":6},"16":{"connected":[[0,0]],"distance":59460,"ableConnected":true,"time":71},"38":{"connected":[[0,0]],"distance":44791,"ableConnected":true,"time":54},"17":{"connected":[[0,0]],"distance":58921,"ableConnected":true,"time":71},"39":{"connected":[[0,0]],"distance":45125,"ableConnected":true,"time":54},"18":{"connected":[[0,0]],"distance":58921,"ableConnected":true,"time":71},"19":{"connected":[[0,0]],"distance":54414,"ableConnected":true,"time":65},"40":{"connected":[[0,0]],"distance":58947,"ableConnected":true,"time":71},"41":{"connected":[[0,0]],"distance":44942,"ableConnected":true,"time":54},"20":{"connected":[[0,0]],"distance":54414,"ableConnected":true,"time":65},"21":{"connected":[[0,0]],"distance":54414,"ableConnected":true,"time":65}},"workTime":20,"lat":22.558066}]}'
     pickupSol = json.loads(pickupStr)  # 反序列化
     # vehicle
-    vehicle = '{"nElems":0,"mapVehicle":{"100":{"volume":5.0,"amount":17,"stratCash":100.0,"serviceCount":50,"distance":2000000,"piece":500.0,"loadRate":0.9,"weight":500.0,"id":100,"oilWearCash":0.01,"time":360,"backDepot":false}},"nonEmptySet":[100],"backTack":false}'
+    vehicleStr = '{"nElems":0,"mapVehicle":{"100":{"volume":5.0,"amount":17,"stratCash":100.0,"serviceCount":50,"distance":2000000,"piece":500.0,"loadRate":0.9,"weight":500.0,"id":100,"oilWearCash":0.01,"time":360,"backDepot":false}},"nonEmptySet":[100],"backTack":false}'
+    vehicleSol = json.loads(vehicleStr)  # 反序列化
     # 绘制 pickup delivery 的散点图
-    pickup_delivery_distribution(pickupSol, deliverySol)
-    # 绘制 基本约束图
-    attribute_constraints([1, 2, 3], [4, 3, 2], '重量')
-    # 绘制 基本约束图
-    attribute_constraints([2, 2, 3], [4, 3, 2], '体积')
-    # 绘制 基本约束图
-    attribute_constraints([1, 2, 1], [3, 3, 2], '件数')
+    # pickup_delivery_distribution(pickupSol, deliverySol)
+    # 绘制 重量约束图
+    weight = []
+    weightThreshold = []
+    volume = []
+    volumeThreshold = []
+    piece = []
+    pieceThreshold = []
+    for route in routeSol['routeInfo']:
+        vehicle = vehicleSol['mapVehicle'][str(route['vehicleId'])]
+        weight.append(route['weight'])
+        weightThreshold.append(vehicle['weight'])
+        volume.append(route['volume'])
+        volumeThreshold.append(vehicle['volume'])
+        piece.append(route['piece'])
+        pieceThreshold.append(vehicle['piece'])
+
+    attribute_constraints(weight, weightThreshold, '重量')
+    # 绘制 体积约束图
+    attribute_constraints(volume, volumeThreshold, '体积')
+    # 绘制 件数约束图
+    attribute_constraints(piece, pieceThreshold, '件数')
     # 绘制 行驶线路图
     route_showV1(routeSol, pickupSol, deliverySol)
 

@@ -1,3 +1,0 @@
-
-
-from .routePlot import weight
