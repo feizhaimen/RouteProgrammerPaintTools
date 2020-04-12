@@ -28,7 +28,8 @@ def route_showV1(routeSol, pickupSol, deliverySol):
             pickupDict['Y'].append(pickup['lat'])
         colorRandom = np.random.rand(1, 3).tolist()[0]  # 随机颜色
         plt.scatter(pickupDict['X'], pickupDict['Y'], marker='h', s=200)
-        plt.plot(pickupDict['X'] + [deliveryDict['X'][0]], pickupDict['Y'] + [deliveryDict['Y'][0]], color=colorRandom,
+        plt.plot(pickupDict['X'] + [deliveryDict['X'][0]], pickupDict['Y'] + [deliveryDict['Y'][0]],
+                 color=colorRandom,
                  lineWidth=3)
         plt.plot(deliveryDict['X'], deliveryDict['Y'], marker='o', markerSize=9, color=colorRandom,
                  lineWidth=3, label=''.join(["线路", str(u)]))
@@ -39,13 +40,12 @@ def route_showV1(routeSol, pickupSol, deliverySol):
     plt.grid()
     plt.show()
 
-
 # 每条线路的属性对比
 def attribute_constraints(attList, attThreshold, attName=None):
     if attName is None:
         attName = '指标'
-    xw = range(1, 1+len(attList))
-    xwt = range(1, 1+len(attThreshold))
+    xw = range(1, 1 + len(attList))
+    xwt = range(1, 1 + len(attThreshold))
     plt.figure(2)
     plt.plot(xw, attList, linewidth=3, marker='o', markersize=12, label='货物')
     plt.plot(xwt, attThreshold, linewidth=3, marker='s', markersize=12, label='车辆')
@@ -55,7 +55,6 @@ def attribute_constraints(attList, attThreshold, attName=None):
     plt.ylabel(attName, FontSize=14)
     plt.rcParams['font.sans-serif'] = ['SimHei']  # 用来正常显示中文标签
     plt.show()
-
 
 # 绘制 pickup delivery 的散点图
 def pickup_delivery_distribution(pickupSol, deliverySol):
@@ -119,4 +118,3 @@ if __name__ == '__main__':
     attribute_constraints(piece, pieceThreshold, '件数')
     # 绘制 行驶线路图
     route_showV1(routeSol, pickupSol, deliverySol)
-
