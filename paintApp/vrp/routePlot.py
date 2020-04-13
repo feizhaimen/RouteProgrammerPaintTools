@@ -2,6 +2,9 @@
 import matplotlib.pyplot as plt
 import json
 import numpy as np
+from io import BytesIO
+import base64
+from lxml import etree
 
 
 # 绘制线路分布图
@@ -40,6 +43,7 @@ def route_showV1(routeSol, pickupSol, deliverySol):
     plt.grid()
     plt.show()
 
+
 # 每条线路的属性对比
 def attribute_constraints(attList, attThreshold, attName=None):
     if attName is None:
@@ -54,7 +58,36 @@ def attribute_constraints(attList, attThreshold, attName=None):
     plt.xlabel('车辆序号', FontSize=14)
     plt.ylabel(attName, FontSize=14)
     plt.rcParams['font.sans-serif'] = ['SimHei']  # 用来正常显示中文标签
-    plt.show()
+    # plt.show()
+    # figure保存为二进制文件
+    buffer = BytesIO()
+    plt.savefig('img.png')
+    plot_data = buffer.getvalue()
+    # 图像数据转化为 HTML 格式
+    imb = base64.b64encode(plot_data)
+    ims = imb.decode()
+    iris_im = '''
+       <html>
+           <body>
+               <img src="ims:image/png;base64,{}" />
+           </body>
+        <html>
+    '''
+    plt.close()
+    sss = iris_im.format(ims)
+    a = 1
+    # root = "<title>Iris Dataset</title>"
+    # root = root + iris_im  # 将多个 html 格式的字符串连接起来
+    #
+    # # lxml 库的 etree 解析字符串为 html 代码，并写入文件
+    # html = etree.HTML(root)
+    # tree = etree.ElementTree(html)
+    # tree.write('iris.html')
+    #
+    # # 最后使用默认浏览器打开 html 文件
+    # import webbrowser
+    # webbrowser.open('iris.html', new=1)
+
 
 # 绘制 pickup delivery 的散点图
 def pickup_delivery_distribution(pickupSol, deliverySol):
@@ -112,9 +145,9 @@ if __name__ == '__main__':
         pieceThreshold.append(vehicle['piece'])
 
     attribute_constraints(weight, weightThreshold, '重量')
-    # 绘制 体积约束图
-    attribute_constraints(volume, volumeThreshold, '体积')
-    # 绘制 件数约束图
-    attribute_constraints(piece, pieceThreshold, '件数')
-    # 绘制 行驶线路图
-    route_showV1(routeSol, pickupSol, deliverySol)
+    # # 绘制 体积约束图
+    # attribute_constraints(volume, volumeThreshold, '体积')
+    # # 绘制 件数约束图
+    # attribute_constraints(piece, pieceThreshold, '件数')
+    # # 绘制 行驶线路图
+    # route_showV1(routeSol, pickupSol, deliverySol)

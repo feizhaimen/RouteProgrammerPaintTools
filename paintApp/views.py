@@ -56,8 +56,8 @@ def opt(request):
     # 绘制 重量约束图
     routePlot.attribute_constraints(weight, weightThreshold, '重量')
     # 绘制 体积约束图
-    routePlot.attribute_constraints(volume, volumeThreshold, '体积')
+    # routePlot.attribute_constraints(volume, volumeThreshold, '体积')
     # 绘制 件数约束图
-    routePlot.attribute_constraints(piece, pieceThreshold, '件数')
+    # routePlot.attribute_constraints(piece, pieceThreshold, '件数')
 
-    return render(request, 'paintApp/templates/index.html')
+    # return render(request, 'paintApp/templates/index.html')
