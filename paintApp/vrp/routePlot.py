@@ -50,7 +50,7 @@ def attribute_constraints(attList, attThreshold, attName=None):
         attName = '指标'
     xw = range(1, 1 + len(attList))
     xwt = range(1, 1 + len(attThreshold))
-    plt.figure(2)
+    fig = plt.figure(2)
     plt.plot(xw, attList, linewidth=3, marker='o', markersize=12, label='货物')
     plt.plot(xwt, attThreshold, linewidth=3, marker='s', markersize=12, label='车辆')
     plt.legend()
@@ -61,7 +61,7 @@ def attribute_constraints(attList, attThreshold, attName=None):
     # plt.show()
     # figure保存为二进制文件
     buffer = BytesIO()
-    plt.savefig('img.png')
+    fig.savefig(buffer)
     plot_data = buffer.getvalue()
     # 图像数据转化为 HTML 格式
     imb = base64.b64encode(plot_data)
@@ -69,24 +69,23 @@ def attribute_constraints(attList, attThreshold, attName=None):
     iris_im = '''
        <html>
            <body>
-               <img src="ims:image/png;base64,{}" />
+               <img src="data:image/png;base64,{}" />
            </body>
         <html>
     '''
-    plt.close()
-    sss = iris_im.format(ims)
-    a = 1
+    # plt.close()
+    # sss = iris_im.format(ims)
     # root = "<title>Iris Dataset</title>"
     # root = root + iris_im  # 将多个 html 格式的字符串连接起来
     #
     # # lxml 库的 etree 解析字符串为 html 代码，并写入文件
-    # html = etree.HTML(root)
-    # tree = etree.ElementTree(html)
-    # tree.write('iris.html')
+    html = etree.HTML(iris_im.format(ims))
+    tree = etree.ElementTree(html)
+    tree.write('iris.html')
     #
     # # 最后使用默认浏览器打开 html 文件
-    # import webbrowser
-    # webbrowser.open('iris.html', new=1)
+    import webbrowser
+    webbrowser.open('iris.html', new=1)
 
 
 # 绘制 pickup delivery 的散点图
